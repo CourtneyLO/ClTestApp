@@ -1,0 +1,6 @@
+[DESIGN]
+
+max-args=6
+min-public-methods=0
+max-attributes=8
+max-parents=11
