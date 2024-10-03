@@ -148,13 +148,16 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-if os.getenv('ENVIRONMENT') == 'local':
-    STATIC_URL = 'static/'
-else:
-    STATICFILES_STORAGE = "django_s3_storage.storage.StaticS3Storage"
-    AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_S3_BUCKET_NAME_STATIC}.s3.amazonaws.com'
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+# if os.getenv('ENVIRONMENT') == 'local':
+#     STATIC_URL = 'static/'
+# else:
+#     STATICFILES_STORAGE = "django_s3_storage.storage.StaticS3Storage"
+#     AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
+#     AWS_S3_CUSTOM_DOMAIN = f'{AWS_S3_BUCKET_NAME_STATIC}.s3.amazonaws.com'
+#     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
