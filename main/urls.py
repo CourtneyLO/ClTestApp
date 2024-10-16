@@ -19,8 +19,10 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from .views import CustomGraphQLView
+from .views import HealthCheck
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("graphql", csrf_exempt(CustomGraphQLView.as_view(graphiql=True))),
+    path('health/', HealthCheck.as_view()),
 ]

@@ -2,6 +2,8 @@
 
 import sentry_sdk
 from graphene_file_upload.django import FileUploadGraphQLView
+from django.views.generic import ListView
+from django.http import JsonResponse
 
 
 class CustomGraphQLView(FileUploadGraphQLView):
@@ -24,3 +26,9 @@ class CustomGraphQLView(FileUploadGraphQLView):
                     sentry_sdk.capture_message(message)
 
         return result
+
+class HealthCheck(ListView):
+    """Add Class Description"""
+
+    def get(self, *args, **kwargs):
+        return JsonResponse({'response': 'ok'}, status=200)
