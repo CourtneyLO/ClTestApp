@@ -31,8 +31,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 URL_HOSTS = os.getenv('URL_HOSTS')
-SPLIT_URL_HOSTS = URL_HOSTS.split(',');
-ALLOWED_HOSTS = [URL_HOST, '127.0.0.1'] + SPLIT_URL_HOSTS
+ALLOWED_HOSTS = URL_HOSTS.split(',');
 
 
 # CORS
