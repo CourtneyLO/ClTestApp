@@ -30,8 +30,9 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-URL_HOST = os.getenv('URL_HOST')
-ALLOWED_HOSTS = [URL_HOST, '127.0.0.1', '.elasticbeanstalk.com']
+URL_HOSTS = os.getenv('URL_HOSTS')
+SPLIT_URL_HOSTS = URL_HOSTS.split(',');
+ALLOWED_HOSTS = [URL_HOST, '127.0.0.1'] + SPLIT_URL_HOSTS
 
 
 # CORS
