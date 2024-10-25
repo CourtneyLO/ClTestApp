@@ -70,7 +70,8 @@ app:
 run:
 	python3 manage.py runserver
 
-
+static:
+	python3 manage.py collectstatic
 # Zappa
 # These commands will only work if you have your usename as a stage with the correct settings in the zappa_settings.json
 
