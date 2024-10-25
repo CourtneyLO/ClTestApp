@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import sentry_sdk
 from dotenv import load_dotenv
+import boto3
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,10 +32,39 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 URL_HOSTS = os.getenv('URL_HOSTS')
-ALLOWED_HOSTS = URL_HOSTS.split(',');
 
-if os.getenv('CSRF_TRUSTED_ORIGINS'):
-    CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(', ')
+def get_parameter(name, with_decryption=True):
+    try:
+        client = boto3.client('ssm', region_name=os.getenv("AWS_REGION", "eu-west-2"))
+        parameter = client.get_parameter(Name=name, WithDecryption=with_decryption)
+        return parameter['Parameter']['Value']
+    except Exception as e:
+        return None
+
+project_name = os.getenv('PROJECT_NAME')
+allowed_ip_addresses = get_parameter(f'/{project_name}/ec2/env/ALLOWED_IP_ADDRESSES') or os.getenv('ALLOWED_IP_ADDRESSES')
+allowed_load_balancer_url = get_parameter(f'/{project_name}/ec2/env/ALLOWED_LOAD_BALANCER_URL') or os.getenv('ALLOWED_LOAD_BALANCER_URL')
+allowed_custom_domain_url = get_parameter(f'/{project_name}/ec2/env/ALLOWED_CUSTOM_DOMAIN_URL') or os.getenv('ALLOWED_CUSTOM_DOMAIN_URL')
+csrf_trusted_origins = get_parameter(f'/{project_name}/ec2/env/CSRF_TRUSTED_ORIGINS') or os.getenv('CSRF_TRUSTED_ORIGINS')
+
+ALLOWED_HOSTS = []
+
+if allowed_ip_addresses:
+    allowed_ip_addresses_list = allowed_ip_addresses.split(',')
+    for ip_address in allowed_ip_addresses_list:
+        ALLOWED_HOSTS.append(ip_address)
+
+if allowed_load_balancer_url:
+    ALLOWED_HOSTS.append(allowed_load_balancer_url)
+
+if allowed_custom_domain_url:
+    ALLOWED_HOSTS.append(allowed_custom_domain_url)
+
+if csrf_trusted_origins:
+    CSRF_TRUSTED_ORIGINS = csrf_trusted_origins.split(',')
+
+print("ALLOWED_HOSTS", ALLOWED_HOSTS)
+print("CSRF_TRUSTED_ORIGINS", CSRF_TRUSTED_ORIGINS)
 
 # CORS
 # https://github.com/adamchainz/django-cors-headers
@@ -154,12 +184,16 @@ if os.getenv('ENVIRONMENT') == 'local':
     STATIC_URL = 'static/'
 else:
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_S3_BUCKET_NAME_STATIC}.s3.amazonaws.com'
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+    print('================')
+    print("STATIC_URL", STATIC_URL)
+    print('================')
 
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
-# STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+print('================')
+print("STATIC_ROOT", STATIC_ROOT)
+print('================')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
