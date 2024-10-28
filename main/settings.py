@@ -59,9 +59,10 @@ if allowed_custom_domain_url:
 
 if csrf_trusted_origins:
     CSRF_TRUSTED_ORIGINS = csrf_trusted_origins.split(',')
+    print("CSRF_TRUSTED_ORIGINS", CSRF_TRUSTED_ORIGINS)
 
 print("ALLOWED_HOSTS", ALLOWED_HOSTS)
-print("CSRF_TRUSTED_ORIGINS", CSRF_TRUSTED_ORIGINS)
+
 
 # CORS
 # https://github.com/adamchainz/django-cors-headers
