@@ -42,17 +42,14 @@ def get_parameter(name, with_decryption=True):
         return None
 
 project_name = os.getenv('PROJECT_NAME')
-allowed_ip_addresses = get_parameter(f'/{project_name}/ec2/env/ALLOWED_IP_ADDRESSES') or os.getenv('ALLOWED_IP_ADDRESSES')
 allowed_load_balancer_url = get_parameter(f'/{project_name}/ec2/env/ALLOWED_LOAD_BALANCER_URL') or os.getenv('ALLOWED_LOAD_BALANCER_URL')
 allowed_custom_domain_url = get_parameter(f'/{project_name}/ec2/env/ALLOWED_CUSTOM_DOMAIN_URL') or os.getenv('ALLOWED_CUSTOM_DOMAIN_URL')
 csrf_trusted_origins = get_parameter(f'/{project_name}/ec2/env/CSRF_TRUSTED_ORIGINS') or os.getenv('CSRF_TRUSTED_ORIGINS')
 
 ALLOWED_HOSTS = []
 
-if allowed_ip_addresses:
-    allowed_ip_addresses_list = allowed_ip_addresses.split(',')
-    for ip_address in allowed_ip_addresses_list:
-        ALLOWED_HOSTS.append(ip_address)
+if os.getenv('ALLOWED_IP_ADDRESS'):
+    ALLOWED_HOSTS.append(os.getenv('ALLOWED_IP_ADDRESS'))
 
 if allowed_load_balancer_url:
     ALLOWED_HOSTS.append(allowed_load_balancer_url)
