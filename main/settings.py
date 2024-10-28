@@ -35,7 +35,7 @@ URL_HOSTS = os.getenv('URL_HOSTS')
 
 def get_parameter(name, with_decryption=True):
     try:
-        client = boto3.client('ssm', region_name=os.getenv("AWS_REGION", "eu-west-1"))
+        client = boto3.client('ssm', region_name=os.getenv("AWS_REGION"))
         parameter = client.get_parameter(Name=name, WithDecryption=with_decryption)
         return parameter['Parameter']['Value']
     except Exception as e:
