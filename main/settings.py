@@ -33,9 +33,11 @@ DEBUG = os.getenv('DEBUG') == 'True'
 
 URL_HOSTS = os.getenv('URL_HOSTS')
 
+AWS_REGION = os.getenv("AWS_REGION")
+
 def get_parameter(name, with_decryption=True):
     try:
-        client = boto3.client('ssm', region_name=os.getenv("AWS_REGION"))
+        client = boto3.client('ssm', region_name=AWS_REGION)
         parameter = client.get_parameter(Name=name, WithDecryption=with_decryption)
         return parameter['Parameter']['Value']
     except Exception as e:
@@ -188,10 +190,10 @@ else:
     print("STATIC_URL", STATIC_URL)
     print('================')
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-print('================')
-print("STATIC_ROOT", STATIC_ROOT)
-print('================')
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# print('================')
+# print("STATIC_ROOT", STATIC_ROOT)
+# print('================')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
